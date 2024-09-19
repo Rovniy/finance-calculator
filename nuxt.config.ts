@@ -1,5 +1,7 @@
 import { config } from "./config"
 
+const sw = process.env.SW === 'true'
+
 export default defineNuxtConfig({
     compatibilityDate: '2024-04-03',
     app: {
@@ -43,7 +45,7 @@ export default defineNuxtConfig({
         logLevel: 'info',
     },
 
-    modules: ['vuetify-nuxt-module', '@pinia/nuxt'],
+    modules: ['vuetify-nuxt-module', '@pinia/nuxt', '@vite-pwa/nuxt'],
 
     vuetify: {
         moduleOptions: {
@@ -58,24 +60,40 @@ export default defineNuxtConfig({
         storesDirs: ['./stores/**',],
     },
 
-    buildModules: [
-        '@nuxtjs/pwa',
-    ],
-
     pwa: {
-        meta: {
-            mobileApp: true,
-            mobileAppIOS: true,
-            appleStatusBarStyle: 'black-translucent',
-            name: 'XPLOIT Finance app',
-            author: 'Andrei (Ravy) Rovnyi',
-            lang: 'ru'
-        },
+        strategies: 'injectManifest',
+        srcDir: 'service-worker',
+        filename: 'sw.ts',
+        registerType: 'autoUpdate',
         manifest: {
             name: 'XPLOIT Finance app',
-            short_name: 'XPLOIT Finance app',
-            lang: 'ru',
-            useWebmanifestExtension: false
-        }
-    }
+            short_name: 'XploitFinanceApp',
+            theme_color: '#ffffff',
+            icons: [
+                {
+                    src: '/static/icon.png',
+                    sizes: '512x512',
+                    type: 'image/png',
+                    purpose: 'any maskable',
+                },
+            ],
+        },
+        workbox: {
+            globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+        },
+        injectManifest: {
+            globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+        },
+        client: {
+            installPrompt: true,
+            periodicSyncForUpdates: 20,
+        },
+        devOptions: {
+            enabled: true,
+            suppressWarnings: true,
+            navigateFallback: '/',
+            navigateFallbackAllowlist: [/^\/$/],
+            type: 'module',
+        },
+    },
 })
