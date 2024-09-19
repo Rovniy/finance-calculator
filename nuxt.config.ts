@@ -45,7 +45,7 @@ export default defineNuxtConfig({
         logLevel: 'info',
     },
 
-    modules: ['vuetify-nuxt-module', '@pinia/nuxt', '@vite-pwa/nuxt'],
+    modules: ['vuetify-nuxt-module', '@pinia/nuxt'],
 
     vuetify: {
         moduleOptions: {
@@ -58,23 +58,5 @@ export default defineNuxtConfig({
 
     pinia: {
         storesDirs: ['./stores/**',],
-    },
-
-    pwa: {
-        strategies: 'generateSW',
-        registerType: 'autoUpdate',
-        manifest: {
-            name: 'XPLOIT Finance app',
-            short_name: 'XploitFinanceApp',
-            theme_color: '#ffffff',
-            icons: [
-                {
-                    src: '/static/icon.png',
-                    sizes: '512x512',
-                    type: 'image/png',
-                    purpose: 'any maskable',
-                },
-            ],
-        }
     },
 })
