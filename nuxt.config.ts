@@ -62,8 +62,6 @@ export default defineNuxtConfig({
 
     pwa: {
         strategies: 'generateSW',
-        srcDir: undefined,
-        filename: undefined,
         registerType: 'autoUpdate',
         manifest: {
             name: 'XPLOIT Finance app',
@@ -77,17 +75,6 @@ export default defineNuxtConfig({
                     purpose: 'any maskable',
                 },
             ],
-        },
-        client: {
-            installPrompt: true,
-            periodicSyncForUpdates: 20,
-        },
-        devOptions: {
-            enabled: true,
-            suppressWarnings: true,
-            navigateFallback: '/',
-            navigateFallbackAllowlist: [/^\/$/],
-            type: 'module',
-        },
+        }
     },
 })
