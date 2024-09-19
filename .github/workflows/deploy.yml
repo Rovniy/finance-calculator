@@ -1,0 +1,42 @@
+name: Deploy to FTP
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: '21'
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Build project
+              run: npm run generate
+
+            - name: Deploy to FTP
+              uses: SamKirkland/FTP-Deploy-Action@4.3.0
+              with:
+                  server: ${{ secrets.FTP_SERVER }}
+                  username: ${{ secrets.FTP_USERNAME }}
+                  password: ${{ secrets.FTP_PASSWORD }}
+                  local-dir: ./dist/
+                  server-dir: /
+
+            - name: Send Telegram notification
+              env:
+                TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+                TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+              run: |
+                curl -s -X POST https://api.telegram.org/bot${{ env.TELEGRAM_TOKEN }}/sendMessage -d chat_id=${{ env.TELEGRAM_CHAT_ID }} -d text="https://finance.ravy.pro successfully updated!"
+
