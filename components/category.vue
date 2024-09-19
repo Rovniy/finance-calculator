@@ -1,9 +1,8 @@
 <template>
-  <v-row>
+  <v-row class="mt-1">
     <v-col class="v-col-auto justify-center pa-1" v-for="cat in categoryList" :key="cat.id">
-      <v-btn :elevation="selectedCategory === cat.id ? 12 : 0"
+      <v-btn :elevation="selectedCategory === cat.id ? 6 : 0"
              rounded="xl"
-             size="large"
              density="default"
              :color="!selectedCategory ? cat.color : (selectedCategory === cat.id ? cat.color : '#e8e8e8')"
              :prepend-icon="cat.icon"

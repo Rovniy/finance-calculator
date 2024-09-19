@@ -4,8 +4,8 @@
   </v-row>
 
   <v-row class="mt-8">
-    <v-col>
-      <v-text-field prepend-icon="mdi-currency-eur" variant="outlined" v-model="totalSum" type="number" clearable autofocus label="Введи потраченную сумму в EUR" />
+    <v-col class="pa-0">
+      <v-text-field prepend-icon="mdi-currency-eur" variant="solo" v-model="totalSum" type="number" clearable autofocus label="Введи потраченную сумму в EUR" />
     </v-col>
   </v-row>
 
