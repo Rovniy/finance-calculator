@@ -1,5 +1,6 @@
 import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithRedirect, onAuthStateChanged } from "firebase/auth"
 import { useUserStore } from "~/stores/user";
+import { config } from "~/config";
 
 export default function () {
     return {
@@ -10,6 +11,8 @@ export default function () {
 
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
+                        if (!config.owner.availableEmails.includes(user.email)) return reject('User not found')
+
                         userStore.setUserData(user)
 
                         resolve(user)
