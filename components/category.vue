@@ -5,7 +5,7 @@
              rounded="xl"
              size="large"
              density="default"
-             :color="!selectedCategory ? cat.color : (selectedCategory === cat.id ? cat.color : 'gray')"
+             :color="!selectedCategory ? cat.color : (selectedCategory === cat.id ? cat.color : '#e8e8e8')"
              :prepend-icon="cat.icon"
              @click="selectCategory(cat)">
         {{ config.category[cat.id].text }}

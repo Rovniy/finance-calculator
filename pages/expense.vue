@@ -18,7 +18,7 @@ onMounted(userStore.mwPageAuth)
 
 <template>
   <v-row justify="center" class="mt-2">
-    <h2 class="h2">Добавить расход</h2>
+    <h2 class="h2">Учет расходов</h2>
   </v-row>
 
   <v-row class="mt-8">

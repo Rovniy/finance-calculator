@@ -8,6 +8,7 @@ const firestore = useFirestore()
 
 const data = ref({})
 const selectedMonth = ref({})
+const isLoading = ref(true)
 
 const categoryList = computed(() => {
   if (data.value.length === 0) return []
@@ -39,7 +40,13 @@ const calculateTotalSum = computed(() => {
 })
 
 const getStatisticByMonth = async month => {
-  data.value = await firestore.getStatsByMonth(config.firebase.firestore.collection.transactions, month)
+  try {
+    isLoading.value = true
+
+    data.value = await firestore.getStatsByMonth(config.firebase.firestore.collection.transactions, month)
+  } finally {
+    isLoading.value = false
+  }
 }
 
 const createCategoryText = category => config.category[category]?.text
@@ -61,32 +68,38 @@ onMounted(async () => {
 </script>
 
 <template>
-  <v-select v-model="selectedMonth" label="Select" :items="monthsList" variant="outlined" @update:modelValue="() => getStatisticByMonth(selectedMonthIndex)" />
+  <v-select v-model="selectedMonth" label="Месяц" :items="monthsList" variant="outlined" @update:modelValue="() => getStatisticByMonth(selectedMonthIndex)" />
 
   <h2 class="h2">Все расходы: {{ filters.thousands(calculateTotalSum) }} EUR</h2>
 
-  <v-list lines="two" class="mt-0">
-    <v-list-item
-        v-for="item in categoryList"
-        :key="item"
-        :subtitle="item.value"
-        :title="item.title">
+  <v-row>
+    <v-col sm="12" md="8" offset-sm="0" offset-md="2" class="d-flex flex-column align-center mt-4" d-sm-flex>
+      <v-progress-circular v-if="isLoading" indeterminate  />
 
-      <template v-slot:prepend>
-        <v-avatar :color="item.color">
-          <v-icon color="black">{{ item.icon }}</v-icon>
-        </v-avatar>
-      </template>
+      <v-list lines="two" class="mt-0 w-100">
+        <v-list-item
+            v-for="item in categoryList"
+            :key="item"
+            :subtitle="item.value"
+            :title="item.title">
 
-      <template v-slot:append>
-        <v-progress-circular
-            :model-value="item.percentage"
-            :size="45"
-            :color="getHeatColor(item.percentage)"
-        >
-          <span style="color: black;">{{ item.percentage }}%</span>
-        </v-progress-circular>
-      </template>
-    </v-list-item>
-  </v-list>
+          <template v-slot:prepend>
+            <v-avatar :color="item.color">
+              <v-icon color="black">{{ item.icon }}</v-icon>
+            </v-avatar>
+          </template>
+
+          <template v-slot:append>
+            <v-progress-circular
+                :model-value="item.percentage"
+                :size="45"
+                :color="getHeatColor(item.percentage)"
+            >
+              <span style="color: black;">{{ item.percentage }}%</span>
+            </v-progress-circular>
+          </template>
+        </v-list-item>
+      </v-list>
+    </v-col>
+  </v-row>
 </template>
