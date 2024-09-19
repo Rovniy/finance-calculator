@@ -3,9 +3,9 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 export default defineNuxtPlugin(() => {
-    const config = useRuntimeConfig();
+    const config = useRuntimeConfig()
 
-    let firebaseApp, firebaseAuth, firestoreDb;
+    let firebaseApp, firebaseAuth, firestoreDb
 
     const firebaseConfig = {
         apiKey: config.app.FIREBASE_PROD_APIKEY,
@@ -13,20 +13,20 @@ export default defineNuxtPlugin(() => {
         projectId: config.app.FIREBASE_PROJECT_ID,
         messagingSenderId: config.app.FIREBASE_MESSAGING_SENDER_ID,
         appId: config.app.FIREBASE_APP_ID,
-    };
+    }
 
     try {
-        firebaseApp = initializeApp(firebaseConfig);
-        firebaseAuth = getAuth(firebaseApp);
-        firestoreDb = getFirestore(firebaseApp);
+        firebaseApp = initializeApp(firebaseConfig)
+        firebaseAuth = getAuth(firebaseApp)
+        firestoreDb = getFirestore(firebaseApp)
 
         return {
             provide: {
                 firebaseApp,
                 firebaseAuth,
                 firestoreDb
-            },
-        };
+            }
+        }
     } catch (e) {
         console.error(e)
     }

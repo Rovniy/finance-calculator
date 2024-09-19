@@ -1,5 +1,14 @@
-<script setup lang="ts">
+<template>
+  <v-row class="h-100">
+    <v-col class="d-flex justify-center align-center" cols="12">
+      <v-btn color="blue" prepend-icon="mdi-google" @click="loginByGoogle">
+        Login with Google
+      </v-btn>
+    </v-col>
+  </v-row>
+</template>
 
+<script setup lang="ts">
 const goToExpensePage = () => useRouter().push('/expense')
 
 const init = async () => {
@@ -20,13 +29,3 @@ const loginByGoogle = async () => {
 
 onMounted(init)
 </script>
-
-<template>
-  <v-row class="h-100">
-    <v-col class="d-flex justify-center align-center" cols="12">
-      <v-btn color="blue" prepend-icon="mdi-google" @click="loginByGoogle">
-        Login with Google
-      </v-btn>
-    </v-col>
-  </v-row>
-</template>

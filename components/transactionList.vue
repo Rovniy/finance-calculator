@@ -1,5 +1,50 @@
+<template>
+  <transactionDialog v-model="dialogOpen" @close="refreshAfterClose" />
+
+  <v-row class="mt-4">
+    <v-col sm="12" md="8" offset-sm="0" offset-md="2" class="d-flex flex-column align-center" d-sm-flex>
+      <v-progress-circular v-if="isLoading" indeterminate  />
+
+      <v-list v-if="!isLoading" lines="two" class="w-100">
+        <v-list-item
+            v-for="item in list"
+            :key="item.id"
+            :title="config.category[item.category]?.text"
+            @click="() => dialogOpen = item">
+
+          <template v-slot:subtitle>
+            <span v-html="createSubTitle(item)" />
+          </template>
+
+          <template v-slot:prepend>
+            <v-avatar :color="config.category[item.category]?.color">
+              <v-icon color="black">{{ config.category[item.category]?.icon }}</v-icon>
+            </v-avatar>
+          </template>
+
+          <template v-slot:append>
+              <span v-if="item.type === 'expense'">-</span>
+              <span v-else>+</span>
+              <b>{{ filters.thousands(item.sum) }}</b>&nbsp;EUR
+          </template>
+        </v-list-item>
+      </v-list>
+
+      <v-pagination
+          v-if="!isLoading"
+          v-model="paginationPage"
+          :length="totalPageComputed"
+          :total-visible="0"
+          :disabled="isLoading"
+          @next="getNextPage"
+          @prev="getPrevPage"
+      ></v-pagination>
+    </v-col>
+  </v-row>
+</template>
+
 <script setup lang="ts">
-import {config} from "~/config";
+import { config } from "~/config";
 import { filters, formatDate } from "~/utils/helpers";
 
 const list = ref([])
@@ -85,55 +130,3 @@ const refreshAfterClose = (mustUpdate = false) => {
 onMounted(init)
 defineExpose({ init })
 </script>
-
-<template>
-  <transactionDialog v-model="dialogOpen" @close="refreshAfterClose" />
-
-  <v-row class="mt-4">
-    <v-col sm="12" md="8" offset-sm="0" offset-md="2" class="d-flex flex-column align-center" d-sm-flex>
-      <v-progress-circular v-if="isLoading" indeterminate  />
-
-      <v-list v-if="!isLoading" lines="two" class="w-100">
-        <v-list-item
-            v-for="item in list"
-            :key="item.id"
-            :title="config.category[item.category]?.text"
-            @click="() => dialogOpen = item">
-
-          <template v-slot:subtitle>
-            <span v-html="createSubTitle(item)" />
-          </template>
-
-          <template v-slot:prepend>
-            <v-avatar :color="config.category[item.category]?.color">
-              <v-icon color="black">{{ config.category[item.category]?.icon }}</v-icon>
-            </v-avatar>
-          </template>
-
-          <template v-slot:append>
-              <span v-if="item.type === 'expense'">-</span>
-              <span v-else>+</span>
-              <b>{{ filters.thousands(item.sum) }}</b>&nbsp;EUR
-          </template>
-        </v-list-item>
-      </v-list>
-
-      <v-pagination
-          v-if="!isLoading"
-          v-model="paginationPage"
-          :length="totalPageComputed"
-          :total-visible="0"
-          :disabled="isLoading"
-          @next="getNextPage"
-          @prev="getPrevPage"
-      ></v-pagination>
-    </v-col>
-  </v-row>
-
-
-
-</template>
-
-<style scoped>
-
-</style>

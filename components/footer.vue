@@ -1,14 +1,3 @@
-<script setup lang="ts">
-const MAP = {
-  addExpense: '/expense',
-  Statistic: '/stats'
-}
-
-const navigation = ref('/expense')
-
-const moveToPage = page => useRouter().push(page)
-</script>
-
 <template>
     <v-bottom-navigation :mandatory="true" grow color="teal" v-model="navigation">
       <v-btn :value="MAP.addExpense" @click="moveToPage(MAP.addExpense)">
@@ -25,6 +14,13 @@ const moveToPage = page => useRouter().push(page)
     </v-bottom-navigation>
 </template>
 
-<style scoped>
+<script setup lang="ts">
+const MAP = {
+  addExpense: '/expense',
+  Statistic: '/stats'
+}
 
-</style>
+const navigation = ref('/expense')
+
+const moveToPage = page => useRouter().push(page)
+</script>

@@ -1,28 +1,3 @@
-<script setup lang="ts">
-import { config } from '~/config'
-import { formatDate } from "~/utils/helpers";
-
-const emit = defineEmits([ 'update:modelValue', 'close' ])
-
-const props = defineProps({
-  modelValue: {
-    type: Object,
-    default: null
-  }
-})
-
-const closeModal = (updateList = false) => {
-  emit('update:modelValue', null)
-  emit('close', updateList)
-}
-
-const deleteItem = item => {
-  useFirestore().deleteDocument(config.firebase.firestore.collection.transactions, item.id)
-
-  return closeModal(true)
-}
-</script>
-
 <template>
   <v-dialog max-width="500" :model-value="!!props.modelValue" @after-leave="closeModal">
     <v-card :prepend-icon="config.category[props.modelValue?.category]?.icon" :title="config.category[props.modelValue?.category]?.text">
@@ -47,6 +22,27 @@ const deleteItem = item => {
   </v-dialog>
 </template>
 
-<style scoped>
+<script setup lang="ts">
+import { config } from '~/config'
+import { formatDate } from "~/utils/helpers"
 
-</style>
+const emit = defineEmits([ 'update:modelValue', 'close' ])
+
+const props = defineProps({
+  modelValue: {
+    type: Object,
+    default: null
+  }
+})
+
+const closeModal = (updateList = false) => {
+  emit('update:modelValue', null)
+  emit('close', updateList)
+}
+
+const deleteItem = item => {
+  useFirestore().deleteDocument(config.firebase.firestore.collection.transactions, item.id)
+
+  return closeModal(true)
+}
+</script>

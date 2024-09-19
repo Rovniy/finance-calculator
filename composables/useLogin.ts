@@ -1,4 +1,4 @@
-import { GoogleAuthProvider, getAuth, signInWithPopup, signInWithRedirect, onAuthStateChanged } from "firebase/auth"
+import { GoogleAuthProvider, getAuth, signInWithPopup, onAuthStateChanged } from "firebase/auth"
 import { useUserStore } from "~/stores/user";
 import { config } from "~/config";
 
@@ -26,13 +26,13 @@ export default function () {
         },
         google: async () => {
             try {
-                const auth = getAuth();
+                const auth = getAuth()
 
                 const provider = new GoogleAuthProvider()
 
                 return signInWithPopup(auth, provider)
             } catch (e) {
-                console.error('Can\'t auth user by Google', e);
+                console.error('Can\'t auth user by Google', e)
             }
         }
     }

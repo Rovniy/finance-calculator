@@ -1,21 +1,3 @@
-<script setup lang="ts">
-import { useUserStore } from "~/stores/user";
-
-const userStore = useUserStore()
-
-const totalSum = ref('')
-const selectedCategoryID = ref('')
-const transactionListRef = ref(null)
-
-const resetData = () => {
-  totalSum.value = ''
-  selectedCategoryID.value = ''
-  transactionListRef.value.init()
-}
-
-onMounted(userStore.mwPageAuth)
-</script>
-
 <template>
   <v-row justify="center" class="mt-2">
     <h2 class="h2">Учет расходов</h2>
@@ -34,6 +16,20 @@ onMounted(userStore.mwPageAuth)
   <transactionList ref="transactionListRef" />
 </template>
 
-<style scoped>
+<script setup lang="ts">
+import { useUserStore } from "~/stores/user"
 
-</style>
+const userStore = useUserStore()
+
+const totalSum = ref('')
+const selectedCategoryID = ref('')
+const transactionListRef = ref(null)
+
+const resetData = () => {
+  totalSum.value = ''
+  selectedCategoryID.value = ''
+  transactionListRef.value.init()
+}
+
+onMounted(userStore.mwPageAuth)
+</script>

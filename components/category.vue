@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import {config} from '@/config'
+import { config } from '@/config'
 
 const selectedCategory = ref('')
 
@@ -24,15 +24,15 @@ const emit = defineEmits(['update:modelValue'])
 const props = defineProps({
   modelValue: {
     type: [String, Number],
-    default: '',
-  },
-});
+    default: ''
+  }
+})
 
 const categoryList = computed(() => Object.values(config.category))
 
 watch(() => props.modelValue, newValue => {
-  selectedCategory.value = newValue;
-});
+  selectedCategory.value = newValue
+})
 
 const selectCategory = cat => {
   selectedCategory.value = cat.id

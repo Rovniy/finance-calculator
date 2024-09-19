@@ -11,7 +11,7 @@ import {
     query,
     startAfter
 } from "firebase/firestore"
-import {addDoc, setDoc} from "@firebase/firestore";
+import { addDoc, setDoc } from "@firebase/firestore"
 
 export default function () {
     return {
@@ -52,24 +52,23 @@ export default function () {
                     first
                 }
             } catch (e) {
-                console.error(`Error getting document: ${e.message}`);
+                console.error(`Error getting document: ${e.message}`)
             }
         },
         addDocument: async (path, docObj) => {
-            const {$firestoreDb} = useNuxtApp();
+            const {$firestoreDb} = useNuxtApp()
 
             try {
                 const addedDoc = await addDoc(collection($firestoreDb, path), {
                     ...docObj,
-                });
+                })
                 await setDoc(
                     doc($firestoreDb, path, addedDoc.id),
                     {id: addedDoc.id},
                     {merge: true}
-                );
-                console.log(`Document Added!`);
+                )
             } catch (e) {
-                console.error(`Error writing document: ${e.message}`);
+                console.error(`Error writing document: ${e.message}`)
             }
         },
         deleteDocument: async (path, documentId) => {
@@ -78,59 +77,58 @@ export default function () {
                 const docRef = doc($firestoreDb, path, documentId)
 
                 await deleteDoc(docRef)
-                console.log(`Документ с ID ${documentId} успешно удален.`)
             } catch (e) {
-                console.error(`Error getting document: ${e.message}`);
+                console.error(`Error getting document: ${e.message}`)
             }
         },
         countDocuments: async path => {
             try {
-                const { $firestoreDb } = useNuxtApp();
+                const { $firestoreDb } = useNuxtApp()
                 const transactionsRef = collection($firestoreDb, path)
 
                 let q = query(transactionsRef)
 
-                const snapshot = await getCountFromServer(q);
+                const snapshot = await getCountFromServer(q)
 
                 return snapshot.data().count
             } catch (e) {
-                console.error(`Error getting document count. Reason: ${e.message}`);
+                console.error(`Error getting document count. Reason: ${e.message}`)
             }
         },
         getStatsByMonth: async (path, month) => {
-            const { $firestoreDb } = useNuxtApp();
+            const { $firestoreDb } = useNuxtApp()
 
-            const start = new Date(new Date().getFullYear(), month - 1, 1);
-            const end = new Date(new Date().getFullYear(), month, 1);
+            const start = new Date(new Date().getFullYear(), month - 1, 1)
+            const end = new Date(new Date().getFullYear(), month, 1)
 
-            const transactionsRef = collection($firestoreDb, 'transactions');
-            const q = query(transactionsRef, where('date', '>=', start), where('date', '<', end));
+            const transactionsRef = collection($firestoreDb, 'transactions')
+            const q = query(transactionsRef, where('date', '>=', start), where('date', '<', end))
 
             try {
-                const snapshot = await getDocs(q);
+                const snapshot = await getDocs(q)
 
                 if (snapshot.empty) {
-                    console.log('No matching documents.');
-                    return {};
+                    console.log('No matching documents.')
+                    return {}
                 }
 
-                const categorySums = {};
+                const categorySums = {}
 
                 snapshot.forEach(doc => {
-                    const data = doc.data();
-                    const category = data.category || 'other';
-                    const sum = data.sum || 0;
+                    const data = doc.data()
+                    const category = data.category || 'other'
+                    const sum = data.sum || 0
 
                     if (!categorySums[category]) {
-                        categorySums[category] = 0;
+                        categorySums[category] = 0
                     }
 
-                    categorySums[category] += sum;
-                });
+                    categorySums[category] += sum
+                })
 
-                return categorySums;
+                return categorySums
             } catch (error) {
-                console.error('Error getting documents: ', error);
+                console.error('Error getting documents: ', error)
             }
         }
     }

@@ -23,16 +23,15 @@
 <script setup lang="ts">
 import { serverTimestamp } from 'firebase/firestore'
 import { config } from '@/config'
-import { useUserStore } from "~/stores/user";
+import { useUserStore } from "~/stores/user"
 
 const userStore = useUserStore()
-
 const firestore = useFirestore()
 
 const isLoading = ref(false)
 const isSuccess = ref(false)
 
-const emit = defineEmits(['sent']);
+const emit = defineEmits(['sent'])
 
 const props = defineProps({
   sum: {
@@ -43,22 +42,20 @@ const props = defineProps({
     type: String,
     default: '',
   }
-});
-
-const isBtnEnabled = computed(() => {
-  return props.sum && props.categoryId && !isLoading.value
 })
+
+const isBtnEnabled = computed(() => props.sum && props.categoryId && !isLoading.value)
 
 const submitOrder = async () => {
   try {
-    isLoading.value = true;
+    isLoading.value = true
 
     const payload = {
       type: 'expense', //income
       sum: Number(String(props.sum).trim().replaceAll(' ', '')),
       category: props.categoryId,
       date: serverTimestamp(),
-      owner: userStore?.userData?.displayName || config.owner.andrei,
+      owner: userStore?.userData?.displayName || config.owner.andrei
     }
 
     await firestore.addDocument(`transactions/`, payload)
@@ -67,9 +64,9 @@ const submitOrder = async () => {
 
     isSuccess.value = true
   } catch(e) {
-    console.error(e);
+    console.error('Can\'t create transaction order', e)
   } finally {
-    isLoading.value = false;
+    isLoading.value = false
   }
 }
 </script>
