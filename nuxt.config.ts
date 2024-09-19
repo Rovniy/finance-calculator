@@ -63,7 +63,7 @@ export default defineNuxtConfig({
     pwa: {
         strategies: 'generateSW',
         srcDir: undefined,
-        filename: 'sw.ts',
+        filename: undefined,
         registerType: 'autoUpdate',
         manifest: {
             name: 'XPLOIT Finance app',
