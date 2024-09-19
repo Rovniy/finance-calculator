@@ -6,6 +6,7 @@ import {
     getCountFromServer,
     getDocs,
     limit,
+    where,
     orderBy,
     query,
     startAfter
@@ -84,7 +85,7 @@ export default function () {
         },
         countDocuments: async path => {
             try {
-                const {$firestoreDb} = useNuxtApp();
+                const { $firestoreDb } = useNuxtApp();
                 const transactionsRef = collection($firestoreDb, path)
 
                 let q = query(transactionsRef)
@@ -94,6 +95,42 @@ export default function () {
                 return snapshot.data().count
             } catch (e) {
                 console.error(`Error getting document count. Reason: ${e.message}`);
+            }
+        },
+        getStatsByMonth: async (path, month) => {
+            const { $firestoreDb } = useNuxtApp();
+
+            const start = new Date(new Date().getFullYear(), month - 1, 1);
+            const end = new Date(new Date().getFullYear(), month, 1);
+
+            const transactionsRef = collection($firestoreDb, 'transactions');
+            const q = query(transactionsRef, where('date', '>=', start), where('date', '<', end));
+
+            try {
+                const snapshot = await getDocs(q);
+
+                if (snapshot.empty) {
+                    console.log('No matching documents.');
+                    return {};
+                }
+
+                const categorySums = {};
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const category = data.category || 'other';
+                    const sum = data.sum || 0;
+
+                    if (!categorySums[category]) {
+                        categorySums[category] = 0;
+                    }
+
+                    categorySums[category] += sum;
+                });
+
+                return categorySums;
+            } catch (error) {
+                console.error('Error getting documents: ', error);
             }
         }
     }

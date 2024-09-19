@@ -2,7 +2,7 @@ export const category = {
     health: {
         id: 'health',
         icon: 'mdi-heart',
-        text: 'Здоровье',
+        text: 'Медицина',
         color: '#FFB3A7'
     },
     party: {
@@ -58,6 +58,24 @@ export const category = {
         icon: 'mdi-train-car',
         text: 'Транспорт',
         color: '#B3D7FF'
+    },
+    beauty: {
+        id: 'beauty',
+        icon: 'mdi-face-woman-shimmer-outline',
+        text: 'Красота',
+        color: '#b3ffd6'
+    },
+    clothes: {
+        id: 'clothes',
+        icon: 'mdi-hanger',
+        text: 'Одежда',
+        color: '#f7b3ff'
+    },
+    investment: {
+        id: 'investment',
+        icon: 'mdi-cash-multiple',
+        text: 'Инвестиции',
+        color: '#faffb3'
     },
     other: {
         id: 'other',

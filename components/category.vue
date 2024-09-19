@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col class="v-col-auto justify-center" v-for="cat in categoryList" :key="cat.id">
+    <v-col class="v-col-auto justify-center pa-1" v-for="cat in categoryList" :key="cat.id">
       <v-btn :elevation="selectedCategory === cat.id ? 12 : 0"
              rounded="xl"
              size="large"

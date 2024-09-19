@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {config} from "~/config";
-import {filters} from "~/utils/helpers";
+import { filters, formatDate } from "~/utils/helpers";
 
 const list = ref([])
 const firstVisibleDoc = ref(null)
@@ -8,30 +8,12 @@ const lastVisibleDoc = ref(null)
 const isLoading = ref(true)
 const totalTransactions = ref(0)
 const paginationPage = ref(1)
+const dialogOpen = ref(null)
 const firestore = useFirestore()
 
 const totalPageComputed = computed(() => {
   return Math.ceil(totalTransactions.value / config.transactions.limit)
 })
-
-const formatDate = (date: number) => {
-  if (!date) return 'Date not valid'
-
-  const parsedDate = new Date(date * 1000);
-
-  const hours = parsedDate.getHours().toString().padStart(2, '0');
-  const minutes = parsedDate.getMinutes().toString().padStart(2, '0');
-  const day = parsedDate.getDate();
-
-  const monthNames = [
-    'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
-    'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
-  ];
-
-  const month = monthNames[parsedDate.getMonth()];
-
-  return `${day} ${month} - ${hours}:${minutes}`;
-}
 
 const createSubTitle = item => {
   const transactionDate = formatDate(item.date?.seconds)
@@ -39,7 +21,7 @@ const createSubTitle = item => {
   let basicString = transactionDate
 
   if (config.transactions.isShowOwner) {
-    basicString += `/ ${transactionOwner}`
+    basicString += `<br/>${transactionOwner}`
   }
 
   return basicString
@@ -94,11 +76,19 @@ const init = async () => {
   }
 }
 
+const refreshAfterClose = (mustUpdate = false) => {
+  if (!mustUpdate) return
+
+  return init()
+}
+
 onMounted(init)
 defineExpose({ init })
 </script>
 
 <template>
+  <transactionDialog v-model="dialogOpen" @close="refreshAfterClose" />
+
   <v-row class="mt-4">
     <v-col sm="12" md="8" offset-sm="0" offset-md="2" class="d-flex flex-column align-center" d-sm-flex>
       <v-progress-circular v-if="isLoading" indeterminate  />
@@ -107,9 +97,13 @@ defineExpose({ init })
         <v-list-item
             v-for="item in list"
             :key="item.id"
-            :subtitle="createSubTitle(item)"
             :title="config.category[item.category]?.text"
-        >
+            @click="() => dialogOpen = item">
+
+          <template v-slot:subtitle>
+            <span v-html="createSubTitle(item)" />
+          </template>
+
           <template v-slot:prepend>
             <v-avatar :color="config.category[item.category]?.color">
               <v-icon color="black">{{ config.category[item.category]?.icon }}</v-icon>
@@ -117,11 +111,9 @@ defineExpose({ init })
           </template>
 
           <template v-slot:append>
-              <b :class="[ item.type === 'expense' ? 'color-red' : 'color-green' ]">
-                <span v-if="item.type === 'expense'">-</span>
-                <span v-else>+</span>
-                {{ filters.thousands(item.sum) }}
-              </b>
+              <span v-if="item.type === 'expense'">-</span>
+              <span v-else>+</span>
+              <b>{{ filters.thousands(item.sum) }}</b>&nbsp;EUR
           </template>
         </v-list-item>
       </v-list>
@@ -137,6 +129,8 @@ defineExpose({ init })
       ></v-pagination>
     </v-col>
   </v-row>
+
+
 
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center" class="mt-4">
+  <v-row justify="center" class="mt-8">
     <v-btn
         class="w-100"
         size="x-large"
@@ -55,7 +55,7 @@ const submitOrder = async () => {
 
     const payload = {
       type: 'expense', //income
-      sum: props.sum,
+      sum: Number(String(props.sum).trim().replaceAll(' ', '')),
       category: props.categoryId,
       date: serverTimestamp(),
       owner: userStore?.userData?.displayName || config.owner.andrei,

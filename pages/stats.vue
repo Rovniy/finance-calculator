@@ -1,15 +1,92 @@
 <script setup lang="ts">
 import { useUserStore } from "~/stores/user";
+import { config } from "~/config";
+import { filters, getHeatColor } from "~/utils/helpers";
 
 const userStore = useUserStore()
+const firestore = useFirestore()
 
-onMounted(userStore.mwPageAuth)
+const data = ref({})
+const selectedMonth = ref({})
+
+const categoryList = computed(() => {
+  if (data.value.length === 0) return []
+
+  const list = []
+
+  Object.keys(data.value).map(i => {
+    list.push({
+      title: createCategoryText(i),
+      sum: data.value[i],
+      value: createCost(data.value[i]),
+      percentage: calculatePercentage(data.value[i]),
+      icon: createCategoryIcon(i),
+      color: createCategoryColor(i)
+    })
+  })
+
+  return list.sort((a, b) => b.sum - a.sum)
+})
+const monthsList = computed(() => Object.values(config.datetime.month).map(i => i.text))
+const currentMonth = computed(() => new Date().getMonth() + 1)
+const selectedMonthIndex = computed(() => monthsList.value.findIndex(i => i === selectedMonth.value) + 1)
+const calculateTotalSum = computed(() => {
+  return Object.values(data.value).reduce((total, sum) => {
+    total += sum
+
+    return total
+  }, 0)
+})
+
+const getStatisticByMonth = async month => {
+  data.value = await firestore.getStatsByMonth(config.firebase.firestore.collection.transactions, month)
+}
+
+const createCategoryText = category => config.category[category]?.text
+const createCategoryIcon = category => config.category[category]?.icon
+const createCategoryColor = category => config.category[category]?.color
+const createCost = sum => `${filters.thousands(sum)} EUR`
+const calculatePercentage = sum => {
+  const value = Math.floor(100 / calculateTotalSum.value * sum)
+
+  return value.toFixed(0)
+}
+
+onMounted(async () => {
+  await userStore.mwPageAuth()
+
+  selectedMonth.value = monthsList.value[currentMonth.value - 1]
+  return getStatisticByMonth(selectedMonthIndex.value)
+})
 </script>
 
 <template>
-  Statistic page
+  <v-select v-model="selectedMonth" label="Select" :items="monthsList" variant="outlined" @update:modelValue="() => getStatisticByMonth(selectedMonthIndex)" />
+
+  <h2 class="h2">Все расходы: {{ filters.thousands(calculateTotalSum) }} EUR</h2>
+
+  <v-list lines="two" class="mt-0">
+    <v-list-item
+        v-for="item in categoryList"
+        :key="item"
+        :subtitle="item.value"
+        :title="item.title">
+
+      <template v-slot:prepend>
+        <v-avatar :color="item.color">
+          <v-icon color="black">{{ item.icon }}</v-icon>
+        </v-avatar>
+      </template>
+
+      <template v-slot:append>
+        <v-progress-circular
+            :model-value="item.percentage"
+            :size="45"
+            :color="getHeatColor(item.percentage)"
+        >
+          <span style="color: black;">{{ item.percentage }}%</span>
+        </v-progress-circular>
+      </template>
+    </v-list-item>
+  </v-list>
 </template>
-
-<style scoped>
-
-</style>
