@@ -57,4 +57,25 @@ export default defineNuxtConfig({
     pinia: {
         storesDirs: ['./stores/**',],
     },
+
+    buildModules: [
+        '@nuxtjs/pwa',
+    ],
+
+    pwa: {
+        meta: {
+            mobileApp: true,
+            mobileAppIOS: true,
+            appleStatusBarStyle: 'black-translucent',
+            name: 'XPLOIT Finance app',
+            author: 'Andrei (Ravy) Rovnyi',
+            lang: 'ru'
+        },
+        manifest: {
+            name: 'XPLOIT Finance app',
+            short_name: 'XPLOIT Finance app',
+            lang: 'ru',
+            useWebmanifestExtension: false
+        }
+    }
 })
