@@ -5,8 +5,8 @@ export default function () {
     return {
         init: async () => {
             return new Promise((resolve, reject) => {
-                const auth = getAuth();
-                const userStore = useUserStore();
+                const auth = getAuth()
+                const userStore = useUserStore()
 
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
@@ -27,7 +27,7 @@ export default function () {
 
                 const provider = new GoogleAuthProvider()
 
-                return signInWithRedirect(auth, provider)
+                return signInWithPopup(auth, provider)
             } catch (e) {
                 console.error('Can\'t auth user by Google', e);
             }
