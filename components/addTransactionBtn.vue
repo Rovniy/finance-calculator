@@ -23,6 +23,9 @@
 <script setup lang="ts">
 import { serverTimestamp } from 'firebase/firestore'
 import { config } from '@/config'
+import { useUserStore } from "~/stores/user";
+
+const userStore = useUserStore()
 
 const firestore = useFirestore()
 
@@ -55,7 +58,7 @@ const submitOrder = async () => {
       sum: props.sum,
       category: props.categoryId,
       date: serverTimestamp(),
-      owner: config.owner.andrei
+      owner: userStore?.userData?.displayName || config.owner.andrei,
     }
 
     await firestore.addDocument(`transactions/`, payload)

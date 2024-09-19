@@ -44,7 +44,7 @@ export default defineNuxtConfig({
         logLevel: 'info',
     },
 
-    modules: ['vuetify-nuxt-module'],
+    modules: ['vuetify-nuxt-module', '@pinia/nuxt'],
 
     vuetify: {
         moduleOptions: {
@@ -53,5 +53,9 @@ export default defineNuxtConfig({
         vuetifyOptions: {
             shaking: true
         }
-    }
+    },
+
+    pinia: {
+        storesDirs: ['./stores/**',],
+    },
 })

@@ -1,35 +1,32 @@
 <script setup lang="ts">
-const totalSum = ref('')
-const selectedCategoryID = ref('')
-const transactionListRef = ref(null)
 
-const resetData = payload => {
-  console.log('payload', payload);
+const goToExpensePage = () => useRouter().push('/expense')
 
-  totalSum.value = ''
-  selectedCategoryID.value = ''
-  transactionListRef.value.init()
+const init = async () => {
+  try {
+    const result = await useLogin().init()
+    if (!result) return
+
+    await goToExpensePage()
+  } catch (e) {
+    console.error('Can\'t init auth user:', e)
+  }
 }
+
+const loginByGoogle = async () => {
+  await useLogin().google()
+  await goToExpensePage()
+}
+
+onMounted(init)
 </script>
 
 <template>
-  <v-row justify="center" class="mt-2">
-    <h2 class="h2">Добавить расход</h2>
-  </v-row>
-
-  <v-row class="mt-8">
-    <v-col>
-      <v-text-field prepend-icon="mdi-currency-eur" variant="outlined" v-model="totalSum" type="number" clearable autofocus label="Введи потраченную сумму в EUR" />
+  <v-row class="h-100">
+    <v-col class="d-flex justify-center align-center" cols="12">
+      <v-btn color="blue" prepend-icon="mdi-google" @click="loginByGoogle">
+        Login with Google
+      </v-btn>
     </v-col>
   </v-row>
-
-  <category v-model="selectedCategoryID" />
-
-  <addTransactionBtn :sum="totalSum" :category-id="selectedCategoryID" @sent="resetData" />
-
-  <transactionList ref="transactionListRef" />
 </template>
-
-<style scoped>
-
-</style>
