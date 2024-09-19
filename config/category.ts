@@ -77,6 +77,12 @@ export const category = {
         text: 'Инвестиции',
         color: '#faffb3'
     },
+    animals: {
+        id: 'animals',
+        icon: 'mdi-paw',
+        text: 'Животные',
+        color: '#d1ffb3'
+    },
     other: {
         id: 'other',
         icon: 'mdi-help-circle-outline',
