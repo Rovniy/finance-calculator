@@ -55,6 +55,34 @@ export default function () {
                 console.error(`Error getting document: ${e.message}`)
             }
         },
+        getDocumentByType: async (path, month, category = 'Dosug') => {
+            const start = new Date(new Date().getFullYear(), month - 1, 1)
+            const end = new Date(new Date().getFullYear(), month, 1)
+
+            try {
+                const {$firestoreDb} = useNuxtApp();
+                const transactionsRef = collection($firestoreDb, path)
+
+                const q = query(transactionsRef,
+                    orderBy('date', 'desc'),
+                    where('category', '==', category),
+                    where('date', '>=', start),
+                    where('date', '<', end))
+
+                const snapshot = await getDocs(q)
+
+                const result = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }))
+
+                return {
+                    result
+                }
+            } catch (e) {
+                console.error(`Error getting document: ${e.message}`)
+            }
+        },
         addDocument: async (path, docObj) => {
             const {$firestoreDb} = useNuxtApp()
 

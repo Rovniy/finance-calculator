@@ -12,6 +12,8 @@
             :title="config.category[item.category]?.text"
             @click="() => dialogOpen = item">
 
+          <span class="comment" v-if="item?.comment">{{ item.comment }}</span>
+
           <template v-slot:subtitle>
             <span v-html="createSubTitle(item)" />
           </template>
@@ -45,7 +47,7 @@
 
 <script setup lang="ts">
 import { config } from "~/config";
-import { filters, formatDate } from "~/utils/helpers";
+import { filters, createSubTitle } from "~/utils/helpers";
 
 const list = ref([])
 const firstVisibleDoc = ref(null)
@@ -60,23 +62,11 @@ const totalPageComputed = computed(() => {
   return Math.ceil(totalTransactions.value / config.transactions.limit)
 })
 
-const createSubTitle = item => {
-  const transactionDate = formatDate(item.date?.seconds)
-  const transactionOwner = item.owner
-  let basicString = transactionDate
-
-  if (config.transactions.isShowOwner) {
-    basicString += `<br/>${transactionOwner}`
-  }
-
-  return basicString
-}
-
-const getTotalCount = async () => {
+async function getTotalCount() {
   totalTransactions.value = await firestore.countDocuments(config.firebase.firestore.collection.transactions)
 }
 
-const getTransactionsList = async (lastDoc = lastVisibleDoc.value, paginationForward = true) => {
+async function getTransactionsList(lastDoc = lastVisibleDoc.value, paginationForward = true) {
   const tempList = await firestore.getDocument(config.firebase.firestore.collection.transactions, {
     count: config.transactions.limit,
     targetDoc: lastDoc,
@@ -88,7 +78,7 @@ const getTransactionsList = async (lastDoc = lastVisibleDoc.value, paginationFor
   tempList?.first && (firstVisibleDoc.value = tempList.first)
 }
 
-const getNextPage = async () => {
+async function getNextPage() {
   try {
     await getTransactionsList(lastVisibleDoc.value)
   } catch (e) {
@@ -96,7 +86,7 @@ const getNextPage = async () => {
   }
 }
 
-const getPrevPage = async () => {
+async function getPrevPage() {
   try {
     await getTransactionsList(firstVisibleDoc.value, false)
   } catch (e) {
@@ -104,7 +94,7 @@ const getPrevPage = async () => {
   }
 }
 
-const init = async () => {
+async function init() {
   try {
     isLoading.value = true
     firstVisibleDoc.value = null
@@ -121,12 +111,22 @@ const init = async () => {
   }
 }
 
-const refreshAfterClose = (mustUpdate = false) => {
+async function refreshAfterClose(mustUpdate = false) {
   if (!mustUpdate) return
 
   return init()
 }
 
 onMounted(init)
+
 defineExpose({ init })
 </script>
+
+<style lang="sass">
+.comment
+  display: inline-block
+  margin: 5px 0 0 0
+  padding: 5px 0 5px 10px
+  font-style: italic
+  border-left: 4px solid lightcoral
+</style>

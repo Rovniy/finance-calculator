@@ -41,6 +41,10 @@ const props = defineProps({
   categoryId: {
     type: String,
     default: '',
+  },
+  comment: {
+    type: String,
+    default: '',
   }
 })
 
@@ -51,6 +55,7 @@ const submitOrder = async () => {
     isLoading.value = true
 
     const payload = {
+      comment: props.comment,
       type: 'expense', //income
       sum: Number(String(props.sum).trim().replaceAll(' ', '')),
       category: props.categoryId,

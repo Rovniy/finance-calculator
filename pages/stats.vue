@@ -12,7 +12,8 @@
             v-for="item in categoryList"
             :key="item"
             :subtitle="item.value"
-            :title="item.title">
+            :title="item.title"
+            @click="openDialogWithData(item)">
 
           <template v-slot:prepend>
             <v-avatar :color="item.color">
@@ -33,6 +34,8 @@
       </v-list>
     </v-col>
   </v-row>
+
+  <stats-dialog :model-value="dialogOpen" v-if="dialogOpen" @close="handleClose" @update-all="init" />
 </template>
 
 <script setup lang="ts">
@@ -46,6 +49,7 @@ const firestore = useFirestore()
 const data = ref({})
 const selectedMonth = ref({})
 const isLoading = ref(true)
+const dialogOpen = ref(null)
 
 const categoryList = computed(() => {
   if (data.value.length === 0) return []
@@ -59,7 +63,8 @@ const categoryList = computed(() => {
       value: createCost(data.value[i]),
       percentage: calculatePercentage(data.value[i]),
       icon: createCategoryIcon(i),
-      color: createCategoryColor(i)
+      color: createCategoryColor(i),
+      category: i
     })
   })
 
@@ -96,10 +101,23 @@ const calculatePercentage = sum => {
   return value.toFixed(0)
 }
 
-onMounted(async () => {
+function openDialogWithData(item) {
+  dialogOpen.value = {
+    ...item,
+    monthIndex: selectedMonthIndex.value
+  }
+}
+
+function handleClose() {
+  dialogOpen.value = null
+}
+
+async function init() {
   await userStore.mwPageAuth()
 
   selectedMonth.value = monthsList.value[currentMonth.value - 1]
   return getStatisticByMonth(selectedMonthIndex.value)
-})
+}
+
+onMounted(init)
 </script>

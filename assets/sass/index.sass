@@ -1,1 +1,28 @@
 @use './helpers'
+
+blockquote
+  padding: 10px 0 10px 20px
+  font-style: italic
+  border-left: 4px solid lightcoral
+
+/* Стиль для всей полосы прокрутки */
+::-webkit-scrollbar
+  width: 5px /* ширина вертикальной полосы */
+  height: 10px /* высота горизонтальной полосы */
+
+
+/* Цвет фона полосы прокрутки */
+::-webkit-scrollbar-track
+  background: #f0f0f0
+  border-radius: 3px
+
+
+/* Цвет самой полосы прокрутки (ползунка) */
+::-webkit-scrollbar-thumb
+  background: #888 /* цвет ползунка */
+  border-radius: 3px
+
+
+/* Цвет при наведении мыши на ползунок */
+::-webkit-scrollbar-thumb:hover
+  background: #555

@@ -1,3 +1,5 @@
+import {config} from "~/config";
+
 export const filters = {
     thousands(val) {
         try {
@@ -50,4 +52,16 @@ export function getHeatColor(value) {
 
     const hex = (r << 16) + (g << 8) + b
     return `#${hex.toString(16).padStart(6, '0')}`
+}
+
+export const createSubTitle = (item: any) => {
+    const transactionDate = formatDate(item.date?.seconds)
+    const transactionOwner = item.owner
+    let basicString = transactionDate
+
+    if (config.transactions.isShowOwner) {
+        basicString += `<br/>${transactionOwner}`
+    }
+
+    return basicString
 }

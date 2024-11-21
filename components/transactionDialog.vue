@@ -4,7 +4,8 @@
       <v-card-text>
         <h4>ID: {{ props.modelValue?.id }}</h4>
         <h4>Сумма затрат: {{ props.modelValue?.sum }} EUR</h4>
-        <h4>Дата: {{ formatDate(props.modelValue?.date?.seconds) }}</h4>
+        <h4>Комментарий к затратам: <blockquote>{{ props.modelValue?.comment }}</blockquote></h4>
+        <h4>Дата: {{ props.modelValue?.comment }}</h4>
         <h4 v-if="config.transactions.isShowOwner">Автор: {{ props.modelValue?.owner }}</h4>
       </v-card-text>
 
@@ -24,7 +25,6 @@
 
 <script setup lang="ts">
 import { config } from '~/config'
-import { formatDate } from "~/utils/helpers"
 
 const emit = defineEmits([ 'update:modelValue', 'close' ])
 
